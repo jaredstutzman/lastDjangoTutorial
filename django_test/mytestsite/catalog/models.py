@@ -41,6 +41,9 @@ class Book(models.Model):
     # Foreign Key used because book can only have one author, but authors can have multiple books.
     # Author as a string rather than object because it hasn't been declared yet in file.
 
+    content = models.TextField(
+        max_length=100000, help_text="Enter the contents of the book")
+
     summary = models.TextField(
         max_length=1000, help_text="Enter a brief description of the book")
     isbn = models.CharField('ISBN', max_length=13,
