@@ -7,6 +7,8 @@ from django.urls import reverse # Used in get_absolute_url() to get URL for spec
 from django.db.models import UniqueConstraint # Constrains fields to unique values
 from django.db.models.functions import Lower # Returns lower cased value of field
 
+from django.conf import settings # Required for unique book instances
+
 class Genre(models.Model):
     """Model representing a book genre."""
     name = models.CharField(
@@ -61,6 +63,24 @@ class Book(models.Model):
 
 import uuid # Required for unique book instances
 
+class Languages(models.Model):
+    """Model representing a Language (e.g. English, French, Japanese, etc.)"""
+
+    language = models.CharField(
+        max_length=100,
+        choices=settings.LANGUAGES,
+        blank=True,
+        default='en',
+        help_text='Book language',
+    )
+
+    name = models.CharField(max_length=200,
+                            help_text="Enter a the book's natural language (e.g. English, French, Japanese etc.)")
+
+    def __str__(self):
+        """String for representing the Model object."""
+        return self.name
+
 class BookInstance(models.Model):
 
     """Model representing a specific copy of a book (i.e. that can be borrowed from the library)."""
@@ -68,6 +88,7 @@ class BookInstance(models.Model):
                           help_text="Unique ID for this particular book across whole library")
     book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True)
     imprint = models.CharField(max_length=200)
+    language = models.ForeignKey('Languages', on_delete=models.RESTRICT, null=True)
     due_back = models.DateField(null=True, blank=True)
 
     LOAN_STATUS = (
